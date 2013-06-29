@@ -17,6 +17,10 @@ module Woodchuck::Runner
     options = {}
 
     optparse = OptionParser.new do |opts|
+      opts.on('-c', '--config FILE', 'read configuration from file') do |file|
+        config = Woodchuck::Config.new file
+        options = config.options
+      end
       opts.on('-l', '--log-level [LOG_LEVEL]', [:debug, :warn, :info, :error, :fatal], 'set the log level') do |level|
         options[:log_level] = level.to_sym
       end
