@@ -10,14 +10,24 @@ require 'woodchuck/format'
 module Woodchuck
   class Agent
   
-    attr_accessor :logger
+    attr_accessor :inputs, :filters, :outputs
     
-    def initialize(config)
+    def initialize(config_obj=nil)
+      @config = config_obj
+    end
+    
+    
+    def configure(config_obj=nil)
+      if @config.nil? and config_obj.nil?
+        raise StandardError, "Need to supply Woodchuck::Config object"
+      elsif @config.nil?
+        @config = config_obj 
+      end
       
       # Set up all the log sources
       @inputs = []
       input_types = Woodchuck::Input.class_variable_get(:@@input_types)
-      config.inputs.each do |type,sources|
+      @config.inputs.each do |type,sources|
         klass = input_types[type]
         sources.each do |settings|
           @inputs << Woodchuck::Input::const_get(klass).new(settings)
@@ -30,7 +40,7 @@ module Woodchuck
       # Setup all the output locations
       @outputs = []
       output_types = Woodchuck::Output.class_variable_get(:@@output_types)
-      config.outputs.each do |type,destinations|
+      @config.outputs.each do |type,destinations|
         klass = output_types[type]
         destinations.each do |settings|
           @outputs << Woodchuck::Output::const_get(klass).new(settings)
@@ -42,13 +52,6 @@ module Woodchuck
   		#@logger.level = options[:log_level]
   		
       @mutex = Mutex.new
-      
-  		#@input_format = case options[:input_format]
-  		#	when :json_event
-  		#		Woodchuck::Input::JsonEvent.new
-  		#	else
-  		#		Woodchuck::Input::Plain.new
-  		#	end
   
       #@watcher = Woodchuck::Watcher.new(self, options[:log_level], @input_format, @paths)
     end

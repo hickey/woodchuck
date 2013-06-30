@@ -38,7 +38,7 @@ module Woodchuck::Runner
   end
   
   def run(config)
-    agent = Woodchuck::Agent.new(config)
+    agent = Woodchuck::Agent.new(config).configure
     agent.start(true)
     Signal.trap('INT') do
       @logger.warn :signal => signal
