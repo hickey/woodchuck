@@ -1,13 +1,15 @@
 module Woodchuck
   
+  class ConfigError < StandardError
+  end
+  
   class Config
     
     attr_reader :options
     
     
-    def initialize(filename)
+    def initialize
       @options = {}
-      read(filename)
     end
     
     
@@ -52,8 +54,7 @@ module Woodchuck
         match = re_item.match line
         unless match.nil? 
           if section.nil? or entry.nil?
-            puts "Houston we have a problem with the config"
-            exit 2
+            raise ConfigError "Definition without a section or entry"
           end
           key = match[1].to_sym
           val = match[2]
@@ -77,8 +78,7 @@ module Woodchuck
             block = {}
             next
           else
-            puts "Trying to close config too many times"
-            exit 2
+            raise ConfigError "Unbalanced braces"
           end
         end
       end
@@ -95,6 +95,21 @@ module Woodchuck
     
     def outputs
       @options[:outputs]
+    end
+    
+    
+    def add_input(path)
+      if path.include? ':'
+        path, type = path.split ':'
+      else
+        type = 'syslog'
+      end
+      @options[:input] << { :file => { :path => path, :type => type }}
+    end
+    
+    def add_output(url)
+      
+      @options[:output] << { }
     end
     
   end
