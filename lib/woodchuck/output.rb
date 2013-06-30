@@ -1,15 +1,29 @@
 require 'socket'
 
-class Woodchuck::Output
-  attr_accessor :type, :logger, :host
-  
-  def initialize(log_level)
-    @host = Socket.gethostname
-    @logger = Woodchuck::Logger.new(::STDOUT)
-		@logger.level = log_level
+module Woodchuck::Output
+  class Base
+    
+    def initialize(settings)
+      @settings = settings
+    end
+    
+    def handle(event)
+      true
+    end
   end
   
-  def handle(event)
-    true
+    
+  @@output_types = {}
+
+end
+
+# Dynamically load any format plugins
+$LOAD_PATH.each do |dir|
+  if File.directory? "#{dir}/woodchuck/output"
+    Dir.foreach("#{dir}/woodchuck/output") do |file|
+      if file.end_with? '.rb'
+        require "woodchuck/output/#{File.basename(file, '.rb')}"
+      end
+    end
   end
 end

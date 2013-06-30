@@ -28,10 +28,14 @@ module Woodchuck
       @filters = []
       
       # Setup all the output locations
-      #@outputs = []
-      #config.outputs.each {|type,settings|
-      #  @outputs << Woodchuck::Output::type_map[type].new settings
-      #}
+      @outputs = []
+      output_types = Woodchuck::Output.class_variable_get(:@@output_types)
+      config.outputs.each do |type,destinations|
+        klass = output_types[type]
+        destinations.each do |settings|
+          @outputs << Woodchuck::Output::const_get(klass).new(settings)
+        end
+      end
       
   		#options[:log_level] ||= :info
       #@logger = Woodchuck::Logger.new(::STDOUT)
