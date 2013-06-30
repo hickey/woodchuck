@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Specify your gem's dependencies in woodchuck.gemspec
-gemspec
+gemspec :name => 'woodchuck'
 
 group :test do
   gem 'rake'
