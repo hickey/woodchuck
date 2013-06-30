@@ -1,7 +1,7 @@
 require 'socket'
 
-module Woodchuck
-  module Input
+module Woodchuck::Input
+
   #class Input
   #  
   #  def create(path, line)
@@ -25,11 +25,14 @@ module Woodchuck
   #		}
   #	end
 	#end
-	  
-    @@input_types = {}
-	  
 	
-  end
+	##
+	# @@input_types provides a dynamic mapping of input source types to 
+	# loaded plugins. Each plugin will register itself in the @@input_types
+	# class variable so that the appropiate plugin can be initialized when
+	# a configuration file is being read. 
+  @@input_types = {}
+	  
 end
 
 # Dynamically load any input plugins

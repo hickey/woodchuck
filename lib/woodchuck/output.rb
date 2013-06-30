@@ -12,7 +12,12 @@ module Woodchuck::Output
     end
   end
   
-    
+  ## 
+	# Much like how @@input_types works, the @@output_types class variable
+	# dynamically maps output destinations to plugins loaded. Each plugin 
+	# will register itself in the @@output_types class variable so that 
+	# the appropiate plugin can be initialized when a configuration file 
+	# is read.
   @@output_types = {}
 
 end

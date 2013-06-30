@@ -1,5 +1,3 @@
-#require 'yajl'
-#require 'socket'
 require 'thread'
 
 require 'woodchuck/config'
@@ -8,15 +6,38 @@ require 'woodchuck/input'
 require 'woodchuck/format'
 
 module Woodchuck
+  
+  ##
+  # Woodchuck::Agent uses EventMachine to automate the collection of log
+  # messages and high performance. Woodchuck::Agent manages the creation 
+  # of the individual plugins for each data source.
+  # 
+  # When a data source receives some amount of log messages, the blob of
+  # log messages is handed off to the responsible plugin for seperation 
+  # and creation of the Woodchuck::Event object to represent the log 
+  # information. The plugin then returns the Woodchuck::Event object to
+  # the agent for processing by the filter plugins and then finally by 
+  # the output plugins.  
   class Agent
   
     attr_accessor :inputs, :filters, :outputs
     
+    ##
+    # Create the Woodchuck agent entity and initialize internal structure
+    # 
+    # @param [Woodchuck::Config] config_obj optional parameter to send a configuration to the agent instance
     def initialize(config_obj=nil)
       @config = config_obj
+      @inputs = []
+      @filters = []
+      @outputs = []
+      @mutex = Mutex.new
     end
     
-    
+    ##
+    # Finalize configuration and instantiate all the plugins that will be needed. 
+    # 
+    # @param [Woodchuck::Config] config_obj configuration object if not specified in constructor
     def configure(config_obj=nil)
       if @config.nil? and config_obj.nil?
         raise StandardError, "Need to supply Woodchuck::Config object"
@@ -25,7 +46,6 @@ module Woodchuck
       end
       
       # Set up all the log sources
-      @inputs = []
       input_types = Woodchuck::Input.class_variable_get(:@@input_types)
       @config.inputs.each do |type,sources|
         klass = input_types[type]
@@ -35,10 +55,9 @@ module Woodchuck
       end
       
       # Setup all the filters  
-      @filters = []
+
       
       # Setup all the output locations
-      @outputs = []
       output_types = Woodchuck::Output.class_variable_get(:@@output_types)
       @config.outputs.each do |type,destinations|
         klass = output_types[type]
@@ -50,21 +69,23 @@ module Woodchuck
   		#options[:log_level] ||= :info
       #@logger = Woodchuck::Logger.new(::STDOUT)
   		#@logger.level = options[:log_level]
-  		
-      @mutex = Mutex.new
-  
-      #@watcher = Woodchuck::Watcher.new(self, options[:log_level], @input_format, @paths)
     end
   
+    ##
+    # Start the agent running and gathering input from its sources
+    # 
+    # @param [Boolean] blocking cause the agent to wait for watcher thread to exit
     def start(blocking=false)
       @mutex.synchronize do
         return if @stop == false
         @stop = false
       end
-      @watcher_thread = Thread.new { @watcher.start }
+      @watcher_thread = Thread.new { watcher }
       @watcher_thread.join if blocking
     end
     
+    ##
+    # Stop the watcher thread if it is running
     def stop
       @mutex.synchronize do
         return if @stop == true
@@ -72,6 +93,21 @@ module Woodchuck
       end
       Thread.kill(@watcher_thread) if @watcher_thread
     end
+    
+    ##
+    # Core and magic of the agent. We use EventMachine to handle watching
+    # each of the inputs for log entries in an event driven method. 
+    # 
+    # The result being much more efficent but at the cost of making all 
+    # the plugins implement a method to handle incoming data.
+    def watcher
+      EventMachine.run do
+  			@inputs.each do |plugin|
+  			  # Tell EventMachine to watch the plugin source
+  				EventMachine::FileGlobWatchTail.new(plugin.source, plugin)
+  			end
+  		end
+		end
     
   end
 end
