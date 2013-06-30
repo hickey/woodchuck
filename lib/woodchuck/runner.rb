@@ -14,33 +14,31 @@ module Woodchuck::Runner
   end
     
   def read(args=ARGV)
-    options = {}
-
+    config = Woodchuck::Config.new
+    
     optparse = OptionParser.new do |opts|
       opts.on('-c', '--config FILE', 'read configuration from file') do |file|
-        config = Woodchuck::Config.new file
-        options = config.options
+        config.read file
       end
       opts.on('-l', '--log-level [LOG_LEVEL]', [:debug, :warn, :info, :error, :fatal], 'set the log level') do |level|
         options[:log_level] = level.to_sym
       end
       opts.on('-o', '--output [OUTPUT]', 'set the output') do |output|
-        options[:output] = output.to_sym
+        config.add_output output
       end
       opts.on('-p', '--paths [PATHS]', Array, 'A list of file paths to watch') do |paths|
-        options[:paths] = paths
+        config.add_input paths
       end
       opts.on('-f', '--format [FORMAT]', [:plain, :json_event], 'Input line format') do |input_format|
         options[:input_format] = input_format
       end
     end
     optparse.parse!(args)
-    options
+    config
   end
   
-  def run(options={})
-    #puts options.inspect
-    agent = Woodchuck::Agent.new(options)
+  def run(config)
+    agent = Woodchuck::Agent.new(config)
     agent.start(true)
     Signal.trap('INT') do
       @logger.warn :signal => signal
