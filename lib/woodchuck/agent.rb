@@ -70,13 +70,7 @@ module Woodchuck
       #@logger = Woodchuck::Logger.new(::STDOUT)
   		#@logger.level = options[:log_level]
   		
-<<<<<<< HEAD
   		self
-=======
-      @mutex = Mutex.new
-  
-      #@watcher = Woodchuck::Watcher.new(self, options[:log_level], @input_format, @paths)
->>>>>>> origin/configfile
     end
   
     ##
