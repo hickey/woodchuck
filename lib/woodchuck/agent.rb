@@ -69,6 +69,8 @@ module Woodchuck
   		#options[:log_level] ||= :info
       #@logger = Woodchuck::Logger.new(::STDOUT)
   		#@logger.level = options[:log_level]
+  		
+  		self
     end
   
     ##
@@ -104,7 +106,8 @@ module Woodchuck
       EventMachine.run do
   			@inputs.each do |plugin|
   			  # Tell EventMachine to watch the plugin source
-  				EventMachine::FileGlobWatchTail.new(plugin.source, plugin)
+  				EventMachine::FileGlobWatchTail.new(plugin.source, 
+  				      lambda { |data|  plugin)
   			end
   		end
 		end
