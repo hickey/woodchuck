@@ -107,7 +107,7 @@ module Woodchuck
   			@inputs.each do |plugin|
   			  # Tell EventMachine to watch the plugin source
   				EventMachine::FileGlobWatchTail.new(plugin.source, 
-  				      lambda { |data|  plugin)
+  				      lambda { |data|  plugin} )
   			end
   		end
 		end
