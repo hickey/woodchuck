@@ -1,10 +1,5 @@
 require "eventmachine"
 require "eventmachine-tail"
-require 'addressable/uri'
-require 'yajl'
-require 'socket'
-require 'time'
-require 'thread'
 require 'forwardable'
 require 'woodchuck/tail_reader'
 
