@@ -99,15 +99,23 @@ module Woodchuck
     ##
     # Core and magic of the agent. We use EventMachine to handle watching
     # each of the inputs for log entries in an event driven method. 
+    #
+    # This starts the ball rolling by receiving a log entry from EventMachine.
+    # Since the plugin is tied to the path where the entry was received from,
+    # we send the entry to that plugin for processing. The plugin has the
+    # responsibility to prepare the entry and then load it into a 
+    # Woodchuck::Event instance then push the event to the output code
+    # to be routed to individual locations.
     # 
     # The result being much more efficent but at the cost of making all 
-    # the plugins implement a method to handle incoming data.
+    # the plugins implement a receive_data method to handle incoming data.
     def watcher
       EventMachine.run do
   			@inputs.each do |plugin|
   			  # Tell EventMachine to watch the plugin source
-  				EventMachine::FileGlobWatchTail.new(plugin.source, 
-  				      lambda { |data|  plugin} )
+  				EventMachine::FileGlobWatchTail.new(plugin.source) do |emtail, entry| 
+  				  plugin.receive_data(entry) 
+				  end
   			end
   		end
 		end
