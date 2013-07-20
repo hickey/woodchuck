@@ -2,14 +2,12 @@ require 'optparse'
 
 require 'woodchuck/version'
 
-require 'woodchuck/logger'
+#require 'woodchuck/logger'
 require 'woodchuck/agent'
-require 'woodchuck/watcher'
 require 'woodchuck/event'
+require 'woodchuck/input'
+require 'woodchuck/format'
 require 'woodchuck/output'
-require 'woodchuck/output/stdout'
-require 'woodchuck/output/redis'
-require 'woodchuck/output/zeromq'
 
 require 'woodchuck/runner'
 
