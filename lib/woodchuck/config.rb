@@ -13,6 +13,17 @@ module Woodchuck
     end
     
     
+    ##
+    # Read a configuration file and parse it into a hash data structure 
+    # for processing and producing objects for processing log files.
+    #   
+    # The hash has three top level keys (:inputs, :filters and :outputs) 
+    # each of which contains an array of entries. Each array entry is a 
+    # hash of key-value pairs that represents the configuration entry. 
+    # Each key is a Ruby symbol. 
+    #   
+    # @param [String] filename path to the config file
+    #
     def read(filename)
       configlines = []
       File.open(filename, 'r') do |f|
