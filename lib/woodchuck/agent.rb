@@ -49,6 +49,9 @@ module Woodchuck
       input_types = Woodchuck::Input.class_variable_get(:@@input_types)
       @config.inputs.each do |type,sources|
         klass = input_types[type]
+        if klass.nil?
+          raise StandardError, "Unknown input type of #{type}"
+        end
         sources.each do |settings|
           @inputs << Woodchuck::Input::const_get(klass).new(settings)
         end
@@ -61,6 +64,9 @@ module Woodchuck
       output_types = Woodchuck::Output.class_variable_get(:@@output_types)
       @config.outputs.each do |type,destinations|
         klass = output_types[type]
+        if klass.nil?
+          raise StandardError, "Unknown output type of #{type}"
+        end
         destinations.each do |settings|
           @outputs << Woodchuck::Output::const_get(klass).new(settings)
         end
