@@ -31,6 +31,7 @@ module Woodchuck
       @inputs = []
       @filters = []
       @outputs = []
+      @output_queue = SizedQueue.new(20)
       @mutex = Mutex.new
     end
     
@@ -53,6 +54,7 @@ module Woodchuck
           raise StandardError, "Unknown input type of #{type}"
         end
         sources.each do |settings|
+          settings[:queue] = @output_queue.clone
           @inputs << Woodchuck::Input::const_get(klass).new(settings)
         end
       end
@@ -88,8 +90,16 @@ module Woodchuck
         return if @stop == false
         @stop = false
       end
-      @watcher_thread = Thread.new { watcher }
-      @watcher_thread.join if blocking
+      @inputs_thread = Thread.new { inputs_thread_start }
+      @outputs_thread = Thread.new { outputs_thread_start }
+      #begin
+      #  @inputs_thread.join if blocking
+      #rescue Exception => e
+      #  puts "Exception: #{e}"
+      #end
+      while true
+        sleep 5
+      end
     end
     
     ##
@@ -99,7 +109,7 @@ module Woodchuck
         return if @stop == true
         @stop = true
       end
-      Thread.kill(@watcher_thread) if @watcher_thread
+      Thread.kill(@inputs_thread) if @inputs_thread
     end
     
     ##
@@ -115,16 +125,36 @@ module Woodchuck
     # 
     # The result being much more efficent but at the cost of making all 
     # the plugins implement a receive_data method to handle incoming data.
-    def watcher
+    def inputs_thread_start
       EventMachine.run do
   			@inputs.each do |plugin|
   			  # Tell EventMachine to watch the plugin source
   				EventMachine::FileGlobWatchTail.new(plugin.source) do |emtail, entry| 
-  				  plugin.receive_data(entry) 
+  				  begin
+  				    plugin.receive_data(entry) 
+				    rescue Exception => e
+				      puts "Exception: #{e}"
+			      end
 				  end
   			end
   		end
+  		puts "EventMachine exiting"
 		end
     
+    
+    ##
+    
+    def outputs_thread_start
+      puts "output thread started"
+      EventMachine.run do
+        queue = @output_queue.clone
+        while true
+          event = queue.deq
+          @outputs.each do |plugin|
+            plugin.handle event
+          end
+        end
+      end
+    end
   end
 end

@@ -52,7 +52,7 @@ module Woodchuck::Input
 	                                     :type        => type,
 	                                     :timestamp   => Time.now.utc.iso8601(6),
 	                                     :source      => "file:#{source}" })
-		    puts "#{event.to_s}"
+		    @config[:queue].push event
 	    end
     end
   end
