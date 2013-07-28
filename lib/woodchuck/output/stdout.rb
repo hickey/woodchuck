@@ -2,13 +2,14 @@ require 'woodchuck/output'
 
 module Woodchuck::Output
   class Stdout < Woodchuck::Output::Base
-    def initialize(log_level)
-      super(log_level)
+    def initialize(settings)
+      super(settings)
       @type = :stdout
     end
   
     def handle(event)
-      @logger.info "Logging event to STDOUT", event.to_hash
+      puts event.to_hash
+      #@logger.info "Logging event to STDOUT", event.to_hash
     end
   end
   

@@ -10,8 +10,8 @@ class Woodchuck::Event
     @timestamp = init_hsh["@timestamp"] || init_hsh[:timestamp]
     @source = init_hsh["@source"] || init_hsh[:source]
     @message = init_hsh["@message"] || init_hsh[:message]
-    @fields = init_hsh["@fields"] || init_hsh[:fields]
-    @tags = init_hsh["@tags"] || init_hsh[:tags]
+    @fields = init_hsh["@fields"] || init_hsh[:fields] || {}
+    @tags = init_hsh["@tags"] || init_hsh[:tags] || []
 		@type = init_hsh["@type"] || init_hsh[:type]
   end
   

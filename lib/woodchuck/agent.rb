@@ -145,7 +145,6 @@ module Woodchuck
     ##
     
     def outputs_thread_start
-      puts "output thread started"
       EventMachine.run do
         queue = @output_queue.clone
         while true
