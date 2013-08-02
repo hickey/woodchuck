@@ -1,13 +1,13 @@
-require 'json'
+require 'yaml'
 
 module Woodchuck
   module Format
-    class Json < Woodchuck::Format
+    class Yaml < Woodchuck::Format
     	protected
     
       ## 
-      # construct_hash() for JSON formats. This input format will send 
-      # any input received through the JSON parser.
+      # construct_hash() for YAML formats. This input format will send 
+      # any input received through the YAML parser.
       # 
       # @param [String] path specification to the source of the log entry
       # @param [String] line JSON data
@@ -15,13 +15,13 @@ module Woodchuck
       #
     	def construct_hash(path, line)
     		super(path, line).merge(
-    			parse_json(line)
+    			parse_yaml(line)
     		)
     	end
     
-    	def parse_json(line)
+    	def parse_yaml(line)
     		begin
-    			JSON.parse(line)
+    			YAML.parse(line)
     		rescue
     			{}
     		end
