@@ -65,7 +65,7 @@ module Woodchuck
         match = re_item.match line
         unless match.nil? 
           if section.nil? or entry.nil?
-            raise ConfigError "Definition without a section or entry"
+            raise ConfigError, "Definition without a section or entry"
           end
           key = match[1].to_sym
           val = match[2]
@@ -123,6 +123,13 @@ module Woodchuck
       @options[:output] << { }
     end
     
+    def method_missing(name, *args, &block) 
+      if name.end_with? '='
+        name = name[0.-2]
+        @options[:global][name] = args[0]
+      end
+      @options[:global][name]
+    end
   end
   
   DEFAULT_OUTPUT = :stdout
