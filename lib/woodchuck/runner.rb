@@ -56,6 +56,10 @@ module Woodchuck::Runner
         config.add_input paths
       end
       
+      opts.on('-d', '--debug', 'turn on debug logging') do
+        config.debug = true
+      end
+      
       opts.separator ''
       opts.separator "Input formats can be specified as json or plain. Plain is default."
       opts.separator ''
