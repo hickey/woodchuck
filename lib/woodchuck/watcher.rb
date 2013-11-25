@@ -12,19 +12,19 @@ class Woodchuck::Watcher
   def initialize(agent, log_level, input_format, *paths)
     @agent = agent
     @logger = Woodchuck::Logger.new(::STDOUT)
-		@logger.level = log_level unless log_level.nil?
+    @logger.level = log_level unless log_level.nil?
     @paths = paths.flatten.compact
-		@input_format = input_format
+    @input_format = input_format
   end
 
   def start
-		Woodchuck::TailReader.static_init(input_format, output)
+    Woodchuck::TailReader.static_init(input_format, output)
 
-		EventMachine.run do
-			paths.each do |path|
-				EventMachine::FileGlobWatchTail.new(path, Woodchuck::TailReader)
-			end
-		end
+    EventMachine.run do
+      paths.each do |path|
+        EventMachine::FileGlobWatchTail.new(path, Woodchuck::TailReader)
+      end
+    end
   end
   
   def inspect

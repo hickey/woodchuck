@@ -4,7 +4,7 @@ require 'addressable/uri'
 module Woodchuck
   class Format
 
-  	protected
+    protected
   
     ##
     # construct_hash() will accept the log entry in which ever format that 
@@ -16,20 +16,20 @@ module Woodchuck
     # @param [String] line log entry data
     # @return [Hash] initial values for Woodchuck::Event
     # 
-  	def construct_hash(path, line)
-  		host = Socket.gethostname
+    def construct_hash(path, line)
+      host = Socket.gethostname
   
-  		{
-  			:source_path => path,
-  			:line => line,
-  			:source_host => host,
-  			:timestamp => Time.now.utc.iso8601(6),
-  			:source => Addressable::URI.new(:scheme => 'file', :host => host, :path => path),
-  			:type => '',
-  			:fields => {},
-  			:tags => []
-  		}
-  	end
+      {
+        :source_path => path,
+        :line => line,
+        :source_host => host,
+        :timestamp => Time.now.utc.iso8601(6),
+        :source => Addressable::URI.new(:scheme => 'file', :host => host, :path => path),
+        :type => '',
+        :fields => {},
+        :tags => []
+      }
+    end
   end
 end
 

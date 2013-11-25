@@ -3,7 +3,7 @@ require 'json'
 module Woodchuck
   module Format
     class Json < Woodchuck::Format
-    	protected
+      protected
     
       ## 
       # construct_hash() for JSON formats. This input format will send 
@@ -13,19 +13,19 @@ module Woodchuck
       # @param [String] line JSON data
       # @return [Hash] initial values for Woodchuck::Event
       #
-    	def construct_hash(path, line)
-    		super(path, line).merge(
-    			parse_json(line)
-    		)
-    	end
+      def construct_hash(path, line)
+        super(path, line).merge(
+          parse_json(line)
+        )
+      end
     
-    	def parse_json(line)
-    		begin
-    			JSON.parse(line)
-    		rescue
-    			{}
-    		end
-    	end
+      def parse_json(line)
+        begin
+          JSON.parse(line)
+        rescue
+          {}
+        end
+      end
     end
   end
 end

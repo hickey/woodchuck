@@ -74,11 +74,11 @@ module Woodchuck
         end
       end
       
-  		#options[:log_level] ||= :info
+      #options[:log_level] ||= :info
       #@logger = Woodchuck::Logger.new(::STDOUT)
-  		#@logger.level = options[:log_level]
-  		
-  		self
+      #@logger.level = options[:log_level]
+      
+      self
     end
   
     ##
@@ -127,19 +127,19 @@ module Woodchuck
     # the plugins implement a receive_data method to handle incoming data.
     def inputs_thread_start
       EventMachine.run do
-  			@inputs.each do |plugin|
-  			  # Tell EventMachine to watch the plugin source
-  				EventMachine::FileGlobWatchTail.new(plugin.source) do |emtail, entry| 
-  				  begin
-  				    plugin.receive_data(entry) 
-				    rescue Exception => e
-				      puts "Exception: #{e}"
-			      end
-				  end
-  			end
-  		end
-  		puts "EventMachine exiting"
-		end
+        @inputs.each do |plugin|
+          # Tell EventMachine to watch the plugin source
+          EventMachine::FileGlobWatchTail.new(plugin.source) do |emtail, entry| 
+            begin
+              plugin.receive_data(entry) 
+            rescue Exception => e
+              puts "Exception: #{e}"
+            end
+          end
+        end
+      end
+      puts "EventMachine exiting"
+    end
     
     
     ##

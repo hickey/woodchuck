@@ -3,7 +3,7 @@
 module Woodchuck
   module Format
     class Plain < Woodchuck::Format
-    	protected
+      protected
     
       ## 
       # construct_hash() for plain text formats. This input format does not 
@@ -14,13 +14,13 @@ module Woodchuck
       # @param [String] line log entry data
       # @return [Hash] initial values for Woodchuck::Event
       # 
-    	def construct_hash(path, line)
-    		super(path, line).merge(
-    			{
-    				:message => line.strip
-    			}
-    		)
-    	end
+      def construct_hash(path, line)
+        super(path, line).merge(
+          {
+            :message => line.strip
+          }
+        )
+      end
     end
   end
 end

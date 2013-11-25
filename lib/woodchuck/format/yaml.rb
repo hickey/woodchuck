@@ -3,7 +3,7 @@ require 'yaml'
 module Woodchuck
   module Format
     class Yaml < Woodchuck::Format
-    	protected
+      protected
     
       ## 
       # construct_hash() for YAML formats. This input format will send 
@@ -13,19 +13,19 @@ module Woodchuck
       # @param [String] line JSON data
       # @return [Hash] initial values for Woodchuck::Event
       #
-    	def construct_hash(path, line)
-    		super(path, line).merge(
-    			parse_yaml(line)
-    		)
-    	end
+      def construct_hash(path, line)
+        super(path, line).merge(
+          parse_yaml(line)
+        )
+      end
     
-    	def parse_yaml(line)
-    		begin
-    			YAML.parse(line)
-    		rescue
-    			{}
-    		end
-    	end
+      def parse_yaml(line)
+        begin
+          YAML.parse(line)
+        rescue
+          {}
+        end
+      end
     end
   end
 end
