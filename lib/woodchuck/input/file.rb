@@ -46,12 +46,11 @@ module Woodchuck::Input
     # @param data data received from the source
     def receive_data(data)
       @buffer.extract(data).each do |line|
-        event = Woodchuck::Event.new ({ :source_path => source,
-                                       :source_host => Socket.gethostname,
+        event = Woodchuck::Event.new ({ :path => source,
+                                       :host => Socket.gethostname,
                                        :message     => line,
                                        :type        => type,
-                                       :timestamp   => Time.now.utc.iso8601(6),
-                                       :source      => "file:#{source}" })
+                                       :timestamp   => Time.now.utc.iso8601(6) })
         @config[:queue].push event
       end
     end
