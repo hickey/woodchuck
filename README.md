@@ -33,7 +33,9 @@ woodchuck --files /var/log/syslog,/var/log/apache/**/*,/var/log/nginx/*.log --ou
 * Performance enhancements
 
 ## Configuration File
-The configuration file format is very much like the standard logstash file format. At the moment only the 'inputs' and 'outputs' sections are active. 
+The configuration file format is very much like the standard logstash file format. Settings may use either '=' or '=>' between the key and the value. 
+
+At the moment only the 'inputs' and 'outputs' sections are implemented. Future versions will implement simple filters to augment events before they are shipped off to logstash. 
 
 ### Inputs
 Currently only the file input is implemented which supports a path and type settings. For example: 

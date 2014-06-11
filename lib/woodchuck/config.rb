@@ -37,7 +37,7 @@ module Woodchuck
       
       re_section = Regexp.new %r{(inputs|filters|outputs)\s*\{}
       re_entry = Regexp.new %r{(\w+)\s*\{}
-      re_item = Regexp.new %r{(\w+)\s*=\s*([^=]+)\s*\n}
+      re_item = Regexp.new %r{(\w+)\s*=\>?\s*([^=]+)\s*\n}
       section = nil
       entry = nil
       block = {}
