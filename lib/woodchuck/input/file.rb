@@ -13,11 +13,11 @@ module Woodchuck::Input
       end
       @config = settings
       
-      super(settings[:path], 0)
-      #@input_format = @@input_format
-      #@output = @@output
-
-      @buffer = BufferedTokenizer.new
+      # silently squelch any log files that can not be opened
+      begin
+        super(settings[:path], 0)
+        @buffer = BufferedTokenizer.new
+      rescue Errno::ENOENT; end
     end
     
     ##
