@@ -9,7 +9,7 @@ module Woodchuck
     
     
     def initialize
-      @options = {}
+      @options = { :global => {} }
     end
     
     
@@ -123,9 +123,10 @@ module Woodchuck
       @options[:output] << { }
     end
     
-    def method_missing(name, *args, &block) 
+    def method_missing(name, *args, &block)
+      name = name.to_s
       if name.end_with? '='
-        name = name[0.-2]
+        name = name[0..-2]
         @options[:global][name] = args[0]
       end
       @options[:global][name]
